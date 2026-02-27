@@ -87,7 +87,7 @@ export async function getAIResponseForCountry(countryName, characterName) {
 
     // Nutze gemini-1.5-flash (sehr schnell und für Texte optimal)
     const model = genAI.getGenerativeModel(
-    { model: "gemini-pro" },
+    { model: "gemini-1.0-pro" },
     { apiVersion: "v1" }
 );
     const result = await model.generateContent(prompt + ` Gib die Antwort für das Land ${englishCountryName}.`);
@@ -95,6 +95,7 @@ export async function getAIResponseForCountry(countryName, characterName) {
     const text = response.text();
     return text;
 }
+
 
 
 
