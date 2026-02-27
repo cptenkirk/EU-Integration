@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Leaflet Karte</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<link rel="stylesheet" href="src/styles/indexlayout.css">
+<link rel="stylesheet" href="src/styles/animations.css">
+<style>
+    /* 1. Schriftart Apercu definieren */
+    @font-face {
+        font-family: 'Apercu';
+        /* Stelle sicher, dass diese Pfade zu deinen Dateien passen */
+        src: url('src/fonts/Apercu-Regular.woff2') format('woff2'),
+             url('src/fonts/Apercu-Regular.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    /* 2. Schriftart global anwenden */
+    body, h1, h2, h3, p, button, .intro-content, .character-dialog-content {
+        font-family: 'Apercu', sans-serif !important;
+    }
+
+    /* FIX: Globaler Reset für konsistente Darstellung auf allen Monitoren */
+    * {
+        box-sizing: border-box; /* Verhindert, dass Padding die Breite vergrößert */
+    }
+    body {
+        margin: 0; /* Entfernt weiße Ränder an den Seiten */
+    }
+</style>
+</head>
+<body>
+    <div>
+        <img src="src/icons/m2c.jpg" alt="m2c Logo" style="position: fixed; top: 17px; left: 20px; height: 50px; width: auto; z-index: 1000;">
+        <img src="src/icons/journeys.png" alt="EU Journeys" style="position: fixed; top: 17px; left: 209px; height: 70px; width: auto; z-index: 1000;">
+        <img src="src/icons/cofinance.png" alt="Cofinanced by the European Union" style="position: fixed; top: 13px; left: 340px; height: 50px; width: auto; z-index: 1000;">
+    </div>
+    <!-- Sprachauswahl-Overlay -->
+    <div id="language-selection-overlay" class="language-selection-overlay">
+        <img src="src/icons/m2c.jpg" alt="m2c Logo" style="position: fixed; top: 17px; left: 20px; height: 50px; width: auto; z-index: 1000;">
+        <img src="src/icons/journeys.png" alt="EU Journeys" style="position: fixed; top: 17px; left: 209px; height: 70px; width: auto; z-index: 1000;">
+        <img src="src/icons/cofinance.png" alt="Cofinanced by the European Union" style="position: fixed; top: 13px; left: 340px; height: 50px; width: auto; z-index: 1000;">
+        <div class="language-selection-content">
+            <h2 data-i18n-key="selectLanguage">Choose Language</h2>
+            <div class="language-options-container">
+                <button onclick="setLanguage('de')" data-i18n-key="german">Deutsch</button>
+                <button onclick="setLanguage('en')" data-i18n-key="english">English</button>
+                <!-- <button onclick="setLanguage('fr')" data-i18n-key="french">Français</button> -->
+                <!-- <button onclick="setLanguage('es')" data-i18n-key="spanish">Español</button> -->
+               <!--  <button onclick="setLanguage('it')" data-i18n-key="italian">Italiano</button> -->
+                <br><br>
+                <!-- <button onclick="setLanguage('pt')" data-i18n-key="portuguese">Português</button> -->
+                <!-- <button onclick="setLanguage('pl')" data-i18n-key="polish">Polski</button> -->
+                <!-- <button onclick="setLanguage('ru')" data-i18n-key="russian">Русский</button> -->
+                <!-- <button onclick="setLanguage('zh')" data-i18n-key="chinese">中文</button> -->
+                <!-- <button onclick="setLanguage('ja')" data-i18n-key="japanese">日本語</button> -->
+                <!-- <button onclick="setLanguage('ar')" data-i18n-key="arabic">العربية</button> -->
+                
+
+            </div>
+        </div>
+    </div>
+
+    <div id="intro" class="intro-container">
+        <img src="src/icons/m2c.jpg" alt="m2c Logo" style="position: fixed; top: 17px; left: 20px; height: 50px; width: auto; z-index: 1000;">
+        <img src="src/icons/journeys.png" alt="EU Journeys" style="position: fixed; top: 17px; left: 209px; height: 70px; width: auto; z-index: 1000;">
+        <img src="src/icons/cofinance.png" alt="Cofinanced by the European Union" style="position: fixed; top: 13px; left: 340px; height: 50px; width: auto; z-index: 1000;">
+        <div class="intro-content">
+        <!-- clamp(MIN, IDEAL, MAX) sorgt dafür, dass die Schrift auf kleinen Screens nicht riesig und auf großen nicht winzig ist -->
+        <h1 data-i18n-key="welcomeMessage" style="color: beige; font-size: clamp(2rem, 5vw, 3.5rem);"></h1>
+        <p data-i18n-key="introText" style="color: beige; font-size: clamp(1rem, 2vw, 3rem);"></p><br><br><br><br><br>
+        <button id="start-button" data-i18n-key="startButton" style="padding: 15px 40px; font-size: 1.5rem; cursor: pointer; background-color: #3498db; color: white; border: none; border-radius: 10px; transition: background-color 0.3s;"></button>
+        </div>
+    </div>
+
+    <div id="character-selection-dialog" class="character-dialog-overlay">
+        <img src="src/icons/m2c.jpg" alt="m2c Logo" style="position: fixed; top: 17px; left: 20px; height: 50px; width: auto; z-index: 1000;">
+        <img src="src/icons/journeys.png" alt="EU Journeys" style="position: fixed; top: 17px; left: 209px; height: 70px; width: auto; z-index: 1000;">
+        <img src="src/icons/cofinance.png" alt="Cofinanced by the European Union" style="position: fixed; top: 13px; left: 340px; height: 50px; width: auto; z-index: 1000;">
+        <div class="character-dialog-content">
+            <h2 data-i18n-key="selectCharacter" style="color: beige; font-size: clamp(1.5rem, 4vw, 2.5rem);"></h2>
+            <div id="character-options" class="character-options-container">
+                <!-- Charakter-Icons werden hier per JavaScript eingefügt -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Charakterauswahl -->
+    <div id="character-intro-dialog" class="character-dialog-overlay" style="display: none;">
+        <img src="src/icons/m2c.jpg" alt="m2c Logo" style="position: fixed; top: 17px; left: 20px; height: 50px; width: auto; z-index: 1000;">
+        <img src="src/icons/journeys.png" alt="EU Journeys" style="position: fixed; top: 17px; left: 209px; height: 70px; width: auto; z-index: 1000;">
+        <img src="src/icons/cofinance.png" alt="Cofinanced by the European Union" style="position: fixed; top: 13px; left: 340px; height: 50px; width: auto; z-index: 1000;">
+        <div class="character-dialog-content">
+            <h2 id="intro-title" style="color: beige; font-size: clamp(1.5rem, 4vw, 2.5rem); margin-bottom: 20px;"></h2>
+            <img id="intro-icon" src="" alt="Character Icon" style="height: 400px; width: auto; object-fit: contain; margin-bottom: 20px;">
+            <p id="intro-text" style="color: white; font-size: clamp(1rem, 2vw, 1.5rem); margin-bottom: 30px; max-width: 800px;"></p>
+            <button id="intro-start-button" data-i18n-key="intro-start-button" style="padding: 15px 40px; font-size: 1.5rem; cursor: pointer; background-color: #3498db; color: white; border: none; border-radius: 10px; transition: background-color 0.3s;">Fortfahren</button>
+        </div>
+    </div>
+
+    <div id="map" class="mb-8"></div>
+
+    <!-- Button zum Zurückkehren zur Charakterauswahl -->
+    <button id="back-to-character-selection" class="back-button" style="display: none;" data-i18n-key="changeCharacter"></button>
+
+    <!-- Button um die Sprache zu ändern -->
+
+    <button id="language-toggle-button" data-i18n-key="toggleLanguage"></button>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+
+    
+
+<!--<script type="module" src="src/europa.js"></script>
+    <script type="module" src="src/countrydata.js"></script>
+    <script type="module" src="src/aiprompt.js"></script>
+    <script type="module" src="src/karaktere.js" z-index="1000"></script>
+    <script type="module" src="src/maplayout.js"></script> -->
+    <script type="module" src="src/main.js"></script>
+    <!-- Neues Dialogfeld für Länderinformationen -->
+
+    <div id="country-info-dialog" class="country-dialog">
+        
+        <div class="dialog-header">
+            <h3 id="country-info-title" data-i18n-key="countryInfoTitle">Länderinformationen</h3>
+            
+            <button onclick="closeCountryInfoDialog()" class="close-button">&times;</button>
+        </div>
+        <div id="country-info-content" class="dialog-content" data-i18n-key="clickForDetails">
+            <p>Klicken Sie auf ein Land, um detaillierte Informationen anzuzeigen.</p>
+        </div>
+
+         
+    </div>
+
+    <script>
+
+     /* Eine vollautomatische Übersetzung in Echtzeit (wie bei Google Translate) ist komplex. 
+        Ein gängigerer und besserer Ansatz für Webseiten ist die Internationalisierung (i18n). 
+        Übersetzungsdatei muss selbeer erstellt werden. 
+        Die Anwendung lädt dann die passenden Texte basierend auf der vom Benutzer gewählten Sprache. */
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // KONFIGURATION: Sprachauswahl aktivieren (true) oder deaktivieren (false)
+            const enableLanguageSelection = true; 
+            // Lade die zuletzt gewählte Sprache oder nutze 'de' als Standard
+            let currentLanguage = localStorage.getItem('selectedLanguage') || 'de';
+
+            // Funktion zum Laden und Anwenden der Übersetzungen
+            async function updateContent(lang) {
+                try {
+                    const response = await fetch(`src/language/${lang}.json`);
+                    const translations = await response.json();
+                    
+                    document.querySelectorAll('[data-i18n-key]').forEach(element => {
+                        const key = element.getAttribute('data-i18n-key');
+                        if (translations[key]) {
+                            element.innerHTML = translations[key];
+                        }
+                    });
+
+                    // Rufen Sie die globale Funktion auf, um dynamische Texte wie Popups zu aktualisieren
+                    if (window.updateDynamicTexts) {
+                        window.updateDynamicTexts(translations);
+                    }
+                } catch (error) {
+                    console.error('Fehler beim Laden der Übersetzungsdatei:', error);
+                }
+            }
+
+            // Funktion zum Setzen der Sprache und Aktualisieren der UI
+            window.setLanguage = function(lang) {
+                const langOverlay = document.getElementById('language-selection-overlay');
+                const intro = document.getElementById('intro');
+
+                currentLanguage = lang;
+                localStorage.setItem('selectedLanguage', lang); // Sprache für zukünftige Besuche speichern
+                updateContent(lang); // Texte basierend auf der gewählten Sprache aktualisieren
+
+                // Prüfen, ob der Intro-Screen schon übersprungen wurde.
+                const isPastIntro = intro.classList.contains('hidden');
+                
+                langOverlay.style.display = 'none'; // Sprachauswahl immer ausblenden
+
+                if (!isPastIntro) {
+                    // Wenn wir im initialen Setup sind, zeige den Intro-Screen.
+                    intro.style.display = 'flex';
+                    intro.classList.add('animate-bungee-in');
+                }
+                // Ansonsten bleibt der Nutzer auf dem aktuellen Screen, nur die Texte wurden geändert.
+            };    
+                
+            // Choose-Language ausblenden oder einblenden basierend auf mach bedarf
+           
+            // Zeige das Sprachauswahl-Overlay
+            const langOverlay = document.getElementById('language-selection-overlay');
+            const intro = document.getElementById('intro');
+            
+            if (enableLanguageSelection) {
+                langOverlay.style.display = 'flex';
+                langOverlay.classList.add('animate-bungee-in');
+                intro.style.display = 'none';
+                updateContent(currentLanguage); // Übersetzungen für den Sprachauswahl-Screen laden
+            } 
+            
+            else {
+                langOverlay.style.display = 'none';
+                intro.style.display = 'flex';
+                intro.classList.add('animate-bungee-in');
+                updateContent(currentLanguage); // Gespeicherte oder Standardsprache anwenden
+            }
+
+            // Intro-Button Event Listener
+            window.document.getElementById('start-button').addEventListener('click', function() {
+                document.getElementById('intro').classList.add('hidden');
+                document.getElementById('character-selection-dialog').classList.remove('hidden');
+                document.getElementById('character-selection-dialog').style.display = 'flex';
+                document.getElementById('character-selection-dialog').classList.add('animate-bungee-in');
+                document.getElementById('map').classList.remove('hidden');
+                document.getElementById('map').style.display = 'block'; // map is a div, block is better
+                document.getElementById('language-toggle-button').style.display = 'block'; // Button einblenden
+            });
+
+            // Event Listener für den Sprachwechsel-Button auf der Karte
+            document.getElementById('language-toggle-button').addEventListener('click', function() {
+                const langOverlay = document.getElementById('language-selection-overlay');
+                langOverlay.style.display = 'flex';
+                langOverlay.classList.remove('hidden');
+                langOverlay.classList.add('animate-bungee-in');
+            });
+
+            // Die .hidden Klasse wird von der Logik verwendet, aber war nicht definiert.
+            const style = document.createElement('style');
+            style.innerHTML = `.hidden { display: none !important; }`;
+            document.head.appendChild(style);
+            // Optional: Verzögere das Anzeigen des Charakterauswahldialogs, bis eine Sprache ausgewählt wurde
+            document.getElementById('character-selection-dialog').classList.add('hidden');
+        });
+    </script>
+
+
+</body>
+</html>
