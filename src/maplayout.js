@@ -356,10 +356,22 @@ export function openCountryInfoDialog(countryName, characterName, language) {
                     })
 
                     .catch(error => {
+    console.error("Fehler beim Abrufen der KI-Antwort:", error);
+    // Zeige dem User den genauen Fehler (hilft uns beim Debuggen enorm!)
+    content.innerHTML = `
+        <p i18n="countryInfoTitle"><strong>${countryName}</strong></p>
+        <div style="color: #d9534f; background: #fdf7f7; border: 1px solid #d9534f; padding: 10px; margin-top: 1rem; border-radius: 4px;">
+            <strong>API-Fehler:</strong><br>
+            ${error.message}<br><br>
+            <small>Tipp: Prüfe die Konsole für Details (F12).</small>
+        </div>
+    `;
+});
+                    /* .catch(error => {
                         console.error("Fehler beim Abrufen der KI-Antwort:", error);
                         content.innerHTML = `<p i18n="countryInfoTitle"> <strong>${countryName}</strong>.</p>
                                              <p style="color: red; margin-top: 1rem;">Fehler beim Laden der KI-Informationen.</p>
-                                             <p style="color: #666; margin-top: 1rem;">Diese Box ist 800px breit und 600px hoch.</p>`;
+                                             <p style="color: #666; margin-top: 1rem;">Diese Box ist 800px breit und 600px hoch.</p>`; */
                     });
             } else {
                 console.warn("Die Funktion 'getAIResponseForCountry' wurde nicht gefunden. Stellen Sie sicher, dass sie in aiprompt.js definiert ist.");
@@ -410,3 +422,4 @@ export function initializeMap(L, geojsonData) {
 
     return map;
 }
+
