@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
 // Initialisiere die KI mit deinem API-Schlüssel
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
@@ -117,3 +117,4 @@ export async function getAIResponseForCountry(countryName, characterName) {
 
 
 }
+
