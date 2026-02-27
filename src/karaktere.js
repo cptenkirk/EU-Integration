@@ -1,10 +1,11 @@
 import { openCountryInfoDialog } from "./maplayout.js";
-import manpower from './icons2/manpower2.png'; // Importiere das Icon als Modul
-import handicap from './icons2/handicap2.png'; // Importiere das zweite Icon als Modul
-import family from './icons2/family2.png';
-import senior from './icons2/senior2.png';
-import students from './icons2/students2.png';
 import { geojsonLayer, highlightFeature, resetHighlight } from "./maplayout.js"; // Import geojsonLayer and highlight/reset functions
+const manpower from './icons2/manpower2.png'; // Importiere das Icon als Modul
+const handicap from './icons2/handicap2.png'; // Importiere das zweite Icon als Modul
+const family from './icons2/family2.png';
+const senior from './icons2/senior2.png';
+const students from './icons2/students2.png';
+ 
 export let characterMarkers = []; // Globales Array, um alle Charakter-Marker zu speichern
 let characters = []; // Globale Charakterdefinitionen
 let _mapInstance; // Um die Karteninstanz global im Modul zu speichern
@@ -433,3 +434,4 @@ export function resetToCharacterSelection() {
         backButton.style.display = 'none';
     }
 }
+
