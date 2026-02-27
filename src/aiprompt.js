@@ -1,5 +1,4 @@
-import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai@0.21.0";
-
+import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 // Wir deklarieren genAI hier, initialisieren es aber erst später
 let genAI = null;
 
@@ -87,12 +86,13 @@ export async function getAIResponseForCountry(countryName, characterName) {
     console.log("Generierter KI-Prompt:", prompt);
 
     // Nutze gemini-1.5-flash (sehr schnell und für Texte optimal)
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
     const result = await model.generateContent(prompt + ` Gib die Antwort für das Land ${englishCountryName}.`);
     const response = await result.response;
     const text = response.text();
     return text;
 }
+
 
 
 
