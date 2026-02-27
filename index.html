@@ -7,16 +7,20 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <link rel="stylesheet" href="src/styles/indexlayout.css">
 <link rel="stylesheet" href="src/styles/animations.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 <style>
     /* 1. Schriftart Apercu definieren */
-    @font-face {
-        font-family: 'Apercu';
-        /* Stelle sicher, dass diese Pfade zu deinen Dateien passen */
-        src: url('src/fonts/Apercu-Regular.woff2') format('woff2'),
-             url('src/fonts/Apercu-Regular.woff') format('woff');
-        font-weight: normal;
-        font-style: normal;
-    }
+   @font-face {
+    font-family: "ApercuPro-Regular";
+    src: url("https://db.onlinewebfonts.com/t/74c3c29282b604a9eed88ac6ede61463.eot");
+    src: url("https://db.onlinewebfonts.com/t/74c3c29282b604a9eed88ac6ede61463.eot?#iefix")format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/74c3c29282b604a9eed88ac6ede61463.woff2")format("woff2"),
+    url("https://db.onlinewebfonts.com/t/74c3c29282b604a9eed88ac6ede61463.woff")format("woff"),
+    url("https://db.onlinewebfonts.com/t/74c3c29282b604a9eed88ac6ede61463.ttf")format("truetype"),
+    url("https://db.onlinewebfonts.com/t/74c3c29282b604a9eed88ac6ede61463.svg#ApercuPro-Regular")format("svg");
+}
 
     /* 2. Schriftart global anwenden */
     body, h1, h2, h3, p, button, .intro-content, .character-dialog-content {
@@ -246,4 +250,5 @@
 
 
 </body>
+
 </html>
