@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai@0.1.0";
+import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai@0.21.0";
 
 // Wir deklarieren genAI hier, initialisieren es aber erst später
 let genAI = null;
@@ -93,6 +93,7 @@ export async function getAIResponseForCountry(countryName, characterName) {
     const text = response.text();
     return text;
 }
+
 
 
 
