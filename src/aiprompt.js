@@ -5,6 +5,9 @@ let genAI = null;
 /**
  * Hilfsfunktion, um den Key von deinem Nginx Proxy Manager zu holen
  */
+/**
+ * Hilfsfunktion, um den Key von deinem Nginx Proxy Manager zu holen
+ */
 async function getApiKey() {
     try {
         const response = await fetch('https://eujourney.aifellers.com/api/get-key');
@@ -79,19 +82,13 @@ export async function getAIResponseForCountry(countryName, characterName) {
     
     console.log("Generierter KI-Prompt:", prompt);
 
-    // --- AB HIER DIE ÄNDERUNG: MANUELLER FETCH STATT LIBRARY ---
-
-    // Wir erzwingen hier knallhart v1beta und das Modell
-    // --- AB HIER DIE ÄNDERUNG: VERSUCH MIT FLASH-LATEST ---
-
-    // Wir nutzen "gemini-1.5-flash-latest", das ist die stabilste Zuweisung
+    // --- API CALL MIT FETCH ---
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
 
     const requestBody = {
         contents: [{
             parts: [{ text: prompt + ` Gib die Antwort für das Land ${englishCountryName}.` }]
         }],
-        // Wir fügen Sicherheitseinstellungen hinzu, falls Google in der EU strenger filtert
         safetySettings: [
             { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
             { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
@@ -111,7 +108,6 @@ export async function getAIResponseForCountry(countryName, characterName) {
 
         if (!response.ok) {
             console.error("API Fehler Details:", data);
-            // Falls 'gemini-1.5-flash-latest' auch nicht geht, versuchen wir es mit 'gemini-pro'
             throw new Error(data.error?.message || 'API Request fehlgeschlagen');
         }
 
@@ -119,6 +115,10 @@ export async function getAIResponseForCountry(countryName, characterName) {
             return data.candidates[0].content.parts[0].text;
         } else {
             return "Die KI hat keine Antwort geliefert. Möglicherweise wurde die Antwort durch Sicherheitsfilter blockiert.";
+        }
+    } catch (error) {
+        console.error("Fehler beim Abrufen der KI-Antwort:", error);
+        return "Fehler: " + error.message;
     }
 }
 
