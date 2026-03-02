@@ -83,7 +83,7 @@ export async function getAIResponseForCountry(countryName, characterName) {
     console.log("Generierter KI-Prompt:", prompt);
 
     // --- API CALL MIT FETCH ---
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
 
     const requestBody = {
         contents: [{
@@ -121,6 +121,7 @@ export async function getAIResponseForCountry(countryName, characterName) {
         return "Fehler: " + error.message;
     }
 }
+
 
 
 
