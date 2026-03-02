@@ -288,99 +288,74 @@ export function resetHighlight(e) { // Export this function
 }
 
 export function openCountryInfoDialog(countryName, characterName, language) {
-            const dialog = document.getElementById('country-info-dialog');
-            const title = document.getElementById('country-info-title');
-            const content = document.getElementById('country-info-content');
+    const dialog = document.getElementById('country-info-dialog');
+    const content = document.getElementById('country-info-content');
 
-            // Initialer Inhalt, während die KI-Antwort geladen wird
-            content.innerHTML = `<p i18n="countryInfoTitle"> <strong>${countryName}</strong>.</p>
-                                 <div class="loader"></div>
-                                 <p style="color: #666; margin-top: 1rem;" i18n="loadingAIInfo"> </p>
-                                 <p style="color: #666; margin-top: 1rem;"></p>`; // Behalte die Größeninfo bei
+    // Initialer Inhalt, während die KI-Antwort geladen wird
+    content.innerHTML = `<p i18n="countryInfoTitle"> <strong>${countryName}</strong>.</p>
+                         <div class="loader"></div>
+                         <p style="color: #666; margin-top: 1rem;" i18n="loadingAIInfo"> </p>`;
 
-            dialog.style.display = 'flex';
+    dialog.style.display = 'flex';
 
-            // Annahme: Eine Funktion `getAIResponseForCountry` existiert in aiprompt.js
-            // und gibt ein Promise zurück, das mit dem KI-generierten Text aufgelöst wird.
-           if (typeof getAIResponseForCountry === 'function') {
-                getAIResponseForCountry(countryName, characterName)
-                    .then(fullResponse => {
-                        let displayText = fullResponse;
-                        let sourceUrl = null;
+    if (typeof getAIResponseForCountry === 'function') {
+        getAIResponseForCountry(countryName, characterName)
+            .then(fullResponse => {
+                let displayText = fullResponse;
+                let sourceUrl = null;
 
-                        // Extrahiere die URL, falls vorhanden
-                        const urlRegex = /Quelle:\s*(https?:\/\/[^\s]+)/;
-                        const match = fullResponse.match(urlRegex);
+                const urlRegex = /Quelle:\s*(https?:\/\/[^\s]+)/;
+                const match = fullResponse.match(urlRegex);
 
-                        if (match && match[1]) {
-                            sourceUrl = match[1];
-                            // Entferne die Quellenzeile aus dem Anzeigetext
-                            displayText = fullResponse.replace(urlRegex, '').trim();
-                        }
+                if (match && match[1]) {
+                    sourceUrl = match[1];
+                    displayText = fullResponse.replace(urlRegex, '').trim();
+                }
 
-                        // Richte den Container für die Antwort ein
-                        content.innerHTML = `<p i18n="countryInfoTitle"> <strong>${countryName}</strong>.</p>
-                                             <p id="ai-response-text" style="margin-top: 1rem;"></p>
-                                             <div id="qrcode-container" style="display: flex; flex-direction: column; align-items: center; margin-top: 1rem;"></div>
-                                             `;
-                        
-                        const aiResponseElement = document.getElementById('ai-response-text');
-                        let i = 0;
-                        const speed = 5; // Geschwindigkeit in Millisekunden pro Zeichen
-
-                        function typeWriter() {
-                            if (i < displayText.length) {
-                                // Ersetze Zeilenumbrüche durch <br> für die HTML-Anzeige
-                                const char = displayText.charAt(i) === '\n' ? '<br>' : displayText.charAt(i);
-                                aiResponseElement.innerHTML += char;
-                                i++;
-                                setTimeout(typeWriter, speed);
-                            } else {
-                                // Wenn der Text fertig getippt ist, generiere den QR-Code
-                                if (sourceUrl) {
-                                    const qrcodeContainer = document.getElementById('qrcode-container');
-                                    qrcodeContainer.innerHTML = '<p style="color: #000000ff; margin-top: 1rem; font-size: 20px;">Für mehr Informationen, scannen sie bitte den QR-Code.<br><br><br></p>'; // Füge den Hinweistext hinzu
-                                    new QRCode(qrcodeContainer, {
-                                        text: sourceUrl,
-                                        width: 128,
-                                        height: 128,
-                                        colorDark : "#000000",
-                                        colorLight : "#ffffff",
-                                        correctLevel : QRCode.CorrectLevel.H
-                                    });
-                                }
-                            }
-                        }
-
-                        typeWriter();
-                    })
-
-                    .catch(error => {
-    console.error("Fehler beim Abrufen der KI-Antwort:", error);
-    // Zeige dem User den genauen Fehler (hilft uns beim Debuggen enorm!)
-    content.innerHTML = `
-        <p i18n="countryInfoTitle"><strong>${countryName}</strong></p>
-        <div style="color: #d9534f; background: #fdf7f7; border: 1px solid #d9534f; padding: 10px; margin-top: 1rem; border-radius: 4px;">
-            <strong>API-Fehler:</strong><br>
-            ${error.message}<br><br>
-            <small>Tipp: Prüfe die Konsole für Details (F12).</small>
-        </div>
-    `;
-});
-                    /* .catch(error => {
-                        console.error("Fehler beim Abrufen der KI-Antwort:", error);
-                        content.innerHTML = `<p i18n="countryInfoTitle"> <strong>${countryName}</strong>.</p>
-                                             <p style="color: red; margin-top: 1rem;">Fehler beim Laden der KI-Informationen.</p>
-                                             <p style="color: #666; margin-top: 1rem;">Diese Box ist 800px breit und 600px hoch.</p>`; */
-                    });
-            } else {
-                console.warn("Die Funktion 'getAIResponseForCountry' wurde nicht gefunden. Stellen Sie sicher, dass sie in aiprompt.js definiert ist.");
                 content.innerHTML = `<p i18n="countryInfoTitle"> <strong>${countryName}</strong>.</p>
-                                     <p style="color: red; margin-top: 1rem;" i18n="noInfoAvailable"></p>
-                                     <p style="color: #666; margin-top: 1rem;">Diese Box ist 800px breit und 600px hoch.</p>`;
-            }
-        }
+                                     <p id="ai-response-text" style="margin-top: 1rem;"></p>
+                                     <div id="qrcode-container" style="display: flex; flex-direction: column; align-items: center; margin-top: 1rem;"></div>`;
+                
+                const aiResponseElement = document.getElementById('ai-response-text');
+                let i = 0;
+                const speed = 5;
 
+                function typeWriter() {
+                    if (i < displayText.length) {
+                        const char = displayText.charAt(i) === '\n' ? '<br>' : displayText.charAt(i);
+                        aiResponseElement.innerHTML += char;
+                        i++;
+                        setTimeout(typeWriter, speed);
+                    } else if (sourceUrl) {
+                        const qrcodeContainer = document.getElementById('qrcode-container');
+                        qrcodeContainer.innerHTML = '<p style="color: #000000ff; margin-top: 1rem; font-size: 20px;">Für mehr Informationen, scannen sie bitte den QR-Code.<br><br><br></p>';
+                        new QRCode(qrcodeContainer, {
+                            text: sourceUrl,
+                            width: 128,
+                            height: 128,
+                            colorDark : "#000000",
+                            colorLight : "#ffffff",
+                            correctLevel : QRCode.CorrectLevel.H
+                        });
+                    }
+                }
+                typeWriter();
+            })
+            .catch(error => {
+                console.error("Fehler beim Abrufen der KI-Antwort:", error);
+                content.innerHTML = `
+                    <p i18n="countryInfoTitle"><strong>${countryName}</strong></p>
+                    <div style="color: #d9534f; background: #fdf7f7; border: 1px solid #d9534f; padding: 10px; margin-top: 1rem; border-radius: 4px;">
+                        <strong>API-Fehler:</strong><br>
+                        ${error.message}
+                    </div>`;
+            });
+    } else {
+        console.warn("Die Funktion 'getAIResponseForCountry' wurde nicht gefunden.");
+        content.innerHTML = `<p i18n="countryInfoTitle"><strong>${countryName}</strong></p>
+                             <p style="color: red; margin-top: 1rem;" i18n="noInfoAvailable">KI-Funktion nicht verfügbar.</p>`;
+    }
+}
 
 export function closeCountryInfoDialog() {
             const dialog = document.getElementById('country-info-dialog');
@@ -422,4 +397,5 @@ export function initializeMap(L, geojsonData) {
 
     return map;
 }
+
 
