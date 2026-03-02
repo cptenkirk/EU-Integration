@@ -22,13 +22,10 @@ async function getApiKey() {
  */
 export async function getAIResponseForCountry(countryName, characterName) {
     
-    // NEU: Initialisierung prüfen und Key vom Server holen
-    if (!genAI) {
-        const apiKey = await getApiKey();
-        if (!apiKey) {
-            return "Fehler: API-Schlüssel konnte nicht geladen werden.";
-        }
-        genAI = new GoogleGenerativeAI(apiKey);
+    // 1. Key holen
+    const apiKey = await getApiKey();
+    if (!apiKey) {
+        return "Fehler: API-Schlüssel konnte nicht geladen werden.";
     }
 
     const selectedLanguage = localStorage.getItem('selectedLanguage') || 'de';
@@ -54,14 +51,12 @@ export async function getAIResponseForCountry(countryName, characterName) {
         "Romania", "Slovakia", "Slovenia", "Sweden"
     ];
 
-    // Übersetze den deutschen Namen ins Englische, falls nötig
     const englishCountryName = germanToEnglishMap[countryName] || countryName;
 
     if (!allowedCountries.includes(englishCountryName)){
        throw new Error(`Ungültiger oder nicht unterstützter Ländername: ${countryName}`);
     }
 
-    // Hole die Anweisung für den Charakter aus den Übersetzungen
     const baseStatement = translations[`prompt_${characterName}`] || `Gib eine allgemeine Zusammenfassung der wichtigsten Gesetze und Regelungen für ${characterName}.`;
 
     const questions = [];
@@ -72,7 +67,6 @@ export async function getAIResponseForCountry(countryName, characterName) {
         i++;
     }
 
-    // Baue den Prompt modular zusammen
     let prompt = `Antworte in ${selectedLanguage}: ` + baseStatement;
     if (questions.length > 0) {
         prompt += "\n\nBeantworte dabei auch die folgenden Fragen:\n";
@@ -85,8 +79,9 @@ export async function getAIResponseForCountry(countryName, characterName) {
     
     console.log("Generierter KI-Prompt:", prompt);
 
-    // Nutze gemini-1.5-flash (sehr schnell und für Texte optimal)
-   // Wir erzwingen hier knallhart v1beta und das Modell
+    // --- AB HIER DIE ÄNDERUNG: MANUELLER FETCH STATT LIBRARY ---
+
+    // Wir erzwingen hier knallhart v1beta und das Modell
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
     const requestBody = {
@@ -120,6 +115,7 @@ export async function getAIResponseForCountry(countryName, characterName) {
         return "Fehler: " + error.message;
     }
 }
+
 
 
 
