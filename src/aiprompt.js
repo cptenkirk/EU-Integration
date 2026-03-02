@@ -119,8 +119,9 @@ export async function getAIResponseForCountry(countryName, characterName) {
             return data.candidates[0].content.parts[0].text;
         } else {
             return "Die KI hat keine Antwort geliefert. Möglicherweise wurde die Antwort durch Sicherheitsfilter blockiert.";
-        }
+    }
 }
+
 
 
 
