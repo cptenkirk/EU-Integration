@@ -86,16 +86,40 @@ export async function getAIResponseForCountry(countryName, characterName) {
     console.log("Generierter KI-Prompt:", prompt);
 
     // Nutze gemini-1.5-flash (sehr schnell und für Texte optimal)
-    const model = genAI.getGenerativeModel(
-    { model: "gemini-1.5-flash" }, // Prüfe hier nochmal, ob es 2.0 oder 2.5 heißen soll
-    { apiVersion: "v1beta" }
-);
-    const result = await model.generateContent(prompt + ` Gib die Antwort für das Land ${englishCountryName}.`);
-    const response = await result.response;
-    const text = response.text();
-    return text;
-}
+   // Wir erzwingen hier knallhart v1beta und das Modell
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
+    const requestBody = {
+        contents: [{
+            parts: [{ text: prompt + ` Gib die Antwort für das Land ${englishCountryName}.` }]
+        }]
+    };
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestBody)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error("API Fehler Details:", data);
+            throw new Error(data.error?.message || 'API Request fehlgeschlagen');
+        }
+
+        if (data.candidates && data.candidates[0].content) {
+            return data.candidates[0].content.parts[0].text;
+        } else {
+            return "Die KI hat keine Antwort geliefert (Candidates leer).";
+        }
+
+    } catch (error) {
+        console.error("Fehler beim Abrufen der KI-Antwort:", error);
+        return "Fehler: " + error.message;
+    }
+}
 
 
 
