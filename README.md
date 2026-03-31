@@ -20,6 +20,8 @@ Fachkräfte mit Behinderung: Details zu Barrierefreiheit am Arbeitsplatz und soz
 
 Arbeitsuchende: Direkte Insights in lokale Arbeitsmärkte.
 
+Und noch mehr.
+
 Interaktive Europa-Karte: Eine intuitive Drag-and-Drop-Funktion, mit der Nutzer ihre Interessen oder Profile direkt auf Länder ziehen können, um sofort relevante Informationen zu erhalten.
 
 Unterstützung bei der Einordnung komplexer Integrationsfragen je nach individuellem Hintergrund.
