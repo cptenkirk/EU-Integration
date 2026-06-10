@@ -62,7 +62,7 @@ export async function getAIResponseForCountry(countryName, characterName) {
     const n8nWebhookUrl = 'https://n8n.aifellers.com/webhook-test/1dc782e5-80d8-4e8f-a4cd-66d127fd3541';
 
     const requestBody = {
-        prompt: prompt,
+        chatInput: prompt,
         country: englishCountryName
     };
 
