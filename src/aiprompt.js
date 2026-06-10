@@ -77,8 +77,8 @@ export async function getAIResponseForCountry(countryName, characterName) {
             throw new Error('Fehler beim Abruf vom n8n-Server');
         }
 
-        // n8n gibt uns die Antwort zurück, diese kann aber noch im JSON-Format (z.B. [{"text": "..."}]) sein
-        const aiResponseText = await response.text();
+        // n8n gibt uns die Antwort zurück
+        let aiResponseText = await response.text();
         
         try {
             // Wir versuchen, den Text als JSON zu verarbeiten
@@ -91,9 +91,20 @@ export async function getAIResponseForCountry(countryName, characterName) {
                 return parsedResponse.text;
             }
         } catch (parseError) {
-            // Falls die Antwort kein gültiges JSON ist (z.B. wenn n8n doch reinen Text sendet),
-            // ignorieren wir den Fehler einfach und geben unten den aiResponseText aus.
+            console.warn("JSON Parse Fehler (evtl. unvollständige Antwort der KI). Wende Fallback an.");
         }
+
+        // --- FALLBACK BEREINIGUNG ---
+        // Entferne das umschließende JSON-Format: [{"text":" am Anfang
+        aiResponseText = aiResponseText.replace(/^\[?\s*\{\s*"text"\s*:\s*"/i, '');
+        // Und das schließende "}] am Ende (falls vorhanden)
+        aiResponseText = aiResponseText.replace(/"\s*\}\s*\]?$/i, '');
+        
+        // Ersetze wörtliche '\n' (Backslash + n) durch echte Zeilenumbrüche für die Absätze
+        aiResponseText = aiResponseText.replace(/\\n/g, '\n');
+        
+        // Ersetze entkommte Anführungszeichen (\") durch normale Anführungszeichen
+        aiResponseText = aiResponseText.replace(/\\"/g, '"');
 
         return aiResponseText;
 
