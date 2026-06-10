@@ -59,7 +59,7 @@ export async function getAIResponseForCountry(countryName, characterName) {
 
     // --- AB JETZT ALLES AN DEINEN n8n WEBHOOK SCHICKEN ---
     // Ersetze diese URL mit deiner echten n8n-Webhook-URL (Production oder Test)
-    const n8nWebhookUrl = 'https://n8n.aifellers.com/webhook-test/1dc782e5-80d8-4e8f-a4cd-66d127fd3541';
+    const n8nWebhookUrl = 'https://n8n.aifellers.com/webhook/1dc782e5-80d8-4e8f-a4cd-66d127fd3541';
 
     const requestBody = {
         chatInput: prompt,
