@@ -59,31 +59,31 @@ export function initializeCharacters(map, geojsonData) {
         {
             name: "manpower",
             position: [51.5, -2.0], // Startposition nach Westen verschoben
-            position: [62.0, -15.0], // Endposition des Icons im sichtbaren Bereich
+            position: [57.0, -15.0], // Endposition des Icons im sichtbaren Bereich
             icon: characterIcon1,
         },
         {
             name: "handicap",
             position: [51.5, -2.0], // Startposition nach Westen verschoben
-            position: [62.0, -15.0], // Endposition des Icons im sichtbaren Bereich
+            position: [57.0, -15.0], // Endposition des Icons im sichtbaren Bereich
             icon: characterIcon2
         },
          {
             name: "family",
             position: [51.5, -2.0], // Startposition nach Westen verschoben
-            position: [62.0, -15.0], // Endposition des Icons im sichtbaren Bereich
+            position: [57.0, -15.0], // Endposition des Icons im sichtbaren Bereich
             icon: characterIcon3
         },
         {
             name: "senior",
             position: [51.5, -2.0], // Startposition nach Westen verschoben
-            position: [62.0, -15.0], // Endposition des Icons im sichtbaren Bereich
+            position: [57.0, -15.0], // Endposition des Icons im sichtbaren Bereich
             icon: characterIcon4
         }, 
          {
             name: "students",
             position: [51.5, -2.0], // Startposition nach Westen verschoben
-            position: [62.0, -15.0], // Endposition des Icons im sichtbaren Bereich
+            position: [57.0, -15.0], // Endposition des Icons im sichtbaren Bereich
             icon: characterIcon5
         }  
         
