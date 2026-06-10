@@ -77,12 +77,28 @@ export async function getAIResponseForCountry(countryName, characterName) {
             throw new Error('Fehler beim Abruf vom n8n-Server');
         }
 
-        // n8n gibt uns den reinen Text der KI zurück
+        // n8n gibt uns die Antwort zurück, diese kann aber noch im JSON-Format (z.B. [{"text": "..."}]) sein
         const aiResponseText = await response.text();
+        
+        try {
+            // Wir versuchen, den Text als JSON zu verarbeiten
+            const parsedResponse = JSON.parse(aiResponseText);
+            
+            // Falls n8n ein Array zurückgibt (wie in deinem Fall)
+            if (Array.isArray(parsedResponse) && parsedResponse.length > 0 && parsedResponse[0].text) {
+                return parsedResponse[0].text;
+            } else if (parsedResponse && parsedResponse.text) {
+                return parsedResponse.text;
+            }
+        } catch (parseError) {
+            // Falls die Antwort kein gültiges JSON ist (z.B. wenn n8n doch reinen Text sendet),
+            // ignorieren wir den Fehler einfach und geben unten den aiResponseText aus.
+        }
+
         return aiResponseText;
 
     } catch (error) {
         console.error("Fehler beim Abrufen der KI-Antwort via n8n:", error);
         return "Fehler: " + error.message;
     }
-}
+}//
