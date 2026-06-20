@@ -31,6 +31,11 @@ Interaktives UI: Umsetzung einer Drag-and-Drop-Logik auf einer Leaflet Europakar
 
 User-Centric Design: Fokus auf Barrierefreiheit und intuitive Benutzerführung für Menschen in Umbruchphasen.
 
-Daten-Mapping: Verknüpfung von komplexen Lebensumständen mit länderspezifischen Datenbanken.
+## n8n-Backend Screenshot für die Gemini-API-Node
+
+<img width="1914" height="918" alt="image" src="https://github.com/user-attachments/assets/a67d388c-7fd6-41c7-b283-50f72e1405fb" />
+
+
+## Daten-Mapping: Verknüpfung von komplexen Lebensumständen mit länderspezifischen Datenbanken.
 
 <img width="1505" height="952" alt="image" src="https://github.com/user-attachments/assets/73742a83-724f-4e7f-8b04-1e4bd978c701" />
